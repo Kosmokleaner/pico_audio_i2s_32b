@@ -53,7 +53,7 @@ In addition to original connection
 ### Windows
 * Build is confirmed with Developer Command Prompt for VS 2022 and Visual Studio Code on Windows environment
 * Confirmed with cmake-3.27.2-windows-x86_64 and gcc-arm-none-eabi-10.3-2021.10-win32
-* Lanuch "Developer Command Prompt for VS 2022"
+* Launch "Developer Command Prompt for VS 2022"
 ```
 > cd pico_audio_i2s_32b
 > cd samples/xxxxx  # sample project directory
