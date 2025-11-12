@@ -42,7 +42,7 @@ In addition to original connection
 ```
 > git clone -b 2.1.1 https://github.com/raspberrypi/pico-sdk.git
 > cd pico-sdk
-> git submodule update -i
+> git submodule update --init
 > cd ..
 > git clone -b sdk-2.1.1 https://github.com/raspberrypi/pico-examples.git
 >
