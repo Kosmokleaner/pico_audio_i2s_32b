@@ -2,6 +2,12 @@
 
 [![Build](https://github.com/elehobica/pico_audio_i2s_32b/actions/workflows/build-binaries.yml/badge.svg)](https://github.com/elehobica/pico_audio_i2s_32b/actions/workflows/build-binaries.yml)
 
+## TODO local adjustments:
+
+i2s_bck_pin = 2; // PICO_AUDIO_I2S_CLOCK_PIN_BASE board.GP2   # PCM5102 BCK pin GP2 green
+i2s_lck_pin = 3; // board.GP3  # PCM5102 LCK pin GP3 purple
+i2s_dat_pin = 4; // PICO_AUDIO_I2S_DATA_PIN board.GP4  # PCM5102 DIN pin GP4 blue
+
 ## Overview
 This library is for Raspberry Pi Pico / Pico 2 to support 32bit/Stereo I2S DAC.
 * Channels: 2ch (Stereo)
