@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+//#include <cstdint> // uint8_t 
+
 #include <stdio.h>
 #include <math.h>
 
@@ -38,9 +40,13 @@ static audio_buffer_format_t producer_format = {
     .sample_stride = 8
 };
 
+uint8_t i2s_bck_pin = 2; // PICO_AUDIO_I2S_CLOCK_PIN_BASE board.GP2   # PCM5102 BCK pin GP2 green
+uint8_t i2s_lck_pin = 3; // board.GP3  # PCM5102 LCK pin GP3 purple
+uint8_t i2s_dat_pin = 4; // PICO_AUDIO_I2S_DATA_PIN board.GP4  # PCM5102 DIN pin GP4 blue
+
 static audio_i2s_config_t i2s_config = {
-    .data_pin = PICO_AUDIO_I2S_DATA_PIN,
-    .clock_pin_base = PICO_AUDIO_I2S_CLOCK_PIN_BASE,
+    .data_pin = i2s_dat_pin,
+    .clock_pin_base = i2s_bck_pin,
     .dma_channel0 = 0,
     .dma_channel1 = 1,
     .pio_sm = 0
@@ -74,8 +80,8 @@ audio_buffer_pool_t *init_audio() {
     const audio_format_t *output_format;
 #if USE_AUDIO_I2S
     audio_i2s_config_t config = {
-        .data_pin = PICO_AUDIO_I2S_DATA_PIN,
-        .clock_pin_base = PICO_AUDIO_I2S_CLOCK_PIN_BASE,
+        .data_pin = i2s_dat_pin,
+        .clock_pin_base = i2s_bck_pin,
         .dma_channel = 0,
         .pio_sm = 0
     };
