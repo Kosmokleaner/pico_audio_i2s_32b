@@ -21,6 +21,10 @@
 #define SINE_WAVE_TABLE_LEN 2048
 #define SAMPLES_PER_BUFFER 1156 // Samples / channel
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 static const uint32_t PIN_DCDC_PSM_CTRL = 23;
 
 audio_buffer_pool_t *ap;

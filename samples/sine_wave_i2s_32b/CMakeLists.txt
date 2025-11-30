@@ -10,6 +10,12 @@ project(${project_name})
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+# mutex requires this
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(THREADS_PREFER_PTHREAD_FLAG ON) # Optional, but good for clarity
+set(CMAKE_CXX_EXTENSIONS OFF)
+#find_package(Threads REQUIRED)
+
 pico_sdk_init()
 
 add_subdirectory(../../src/pico_audio_32b pico_audio_32b)
@@ -18,6 +24,7 @@ add_subdirectory(../.. pico_audio_i2s_32b)
 set(bin_name ${PROJECT_NAME})
 add_executable(${PROJECT_NAME}
     sine_wave.cpp
+    GranularSynth.cpp
 )
 
 pico_enable_stdio_usb(${bin_name} 1)
@@ -27,7 +34,9 @@ target_link_libraries(${bin_name} PRIVATE
     pico_stdlib
     pico_audio_32b
     pico_audio_i2s_32b
+#    Threads::Threads
 )
+
 
 # set PIO and DMA for I2S
 # set core1 process i2s_callback
