@@ -1,5 +1,23 @@
 # 32bit I2S DAC Library for Raspberry Pi Pico / Pico 2
 
+
+# My personal build instructions on Raspberry Pi 5 Ubuntu
+I could not get it to work on Windows but I might try again.
+
+todo: combine with existing instructions
+
+    # terminal in folder /media/martinm/IphoneUSB/PicoCpp3/pico_audio_i2s_32b/samples/sine_wave_i2s_32b
+    export PICO_SDK_PATH=/media/martinm/IphoneUSB/PicoCpp/pico-sdk
+    export PICO_EXTRAS_PATH=/media/martinm/IphoneUSB/PicoCpp/pico-extras
+    export PICO_EXAMPLES_PATH=/media/martinm/IphoneUSB/PicoCpp/pico-examples
+    mkdir build
+    cd build
+    cmake ..
+    clear ; make -j4
+    # copy sine_wave_i2s_32b.uf2 to Raspberyy Pi Pico 2 (connected to USB while pression the on board button)
+    # use PUTTY to connect to the correct com port 
+
+
 [![Build](https://github.com/elehobica/pico_audio_i2s_32b/actions/workflows/build-binaries.yml/badge.svg)](https://github.com/elehobica/pico_audio_i2s_32b/actions/workflows/build-binaries.yml)
 
 ## TODO local adjustments:
