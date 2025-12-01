@@ -210,7 +210,7 @@ int main() {
     // in audioSample.cpp
     unsigned extern char* g_sample;
     audioFile->LoadWavFromMemory("", g_sample, 69116);
-    setAudioFile(audioFile);
+    g_wave.setAudioFile(audioFile);
 
     stdio_init_all();
 
@@ -268,6 +268,8 @@ int main() {
 
 void decode()
 {
+    Wave & audioWave = g_wave;
+
     audio_buffer_t *buffer = take_audio_buffer(ap, false);
     if (buffer == NULL) { return; }
     int32_t *samples = (int32_t *) buffer->buffer->bytes;
@@ -280,7 +282,7 @@ void decode()
 
         int16 s = (int16)(value * audioWave.volumePercent / 100.0f);
 
-        for (ma_uint64 iChannel = 0; iChannel < DEVICE_CHANNELS; ++iChannel)
+        for (int iChannel = 0; iChannel < DEVICE_CHANNELS; ++iChannel)
         {
             samples[i * DEVICE_CHANNELS + iChannel] = s;
         }
