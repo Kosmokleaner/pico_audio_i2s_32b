@@ -22,6 +22,9 @@
 #define SINE_WAVE_TABLE_LEN 2048
 #define SAMPLES_PER_BUFFER 1156 // Samples / channel
 
+#define DEVICE_SAMPLE_RATE 44100
+#define DEVICE_CHANNELS 2
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -35,7 +38,7 @@ static constexpr int32_t DAC_ZERO = 1;
 #define audio_pio __CONCAT(pio, PICO_AUDIO_I2S_PIO)
 
 static audio_format_t audio_format = {
-    .sample_freq = 44100,
+    .sample_freq = DEVICE_SAMPLE_RATE,
     .pcm_format = AUDIO_PCM_FORMAT_S32,
     .channel_count = AUDIO_CHANNEL_STEREO
 };
@@ -268,16 +271,29 @@ void decode()
     audio_buffer_t *buffer = take_audio_buffer(ap, false);
     if (buffer == NULL) { return; }
     int32_t *samples = (int32_t *) buffer->buffer->bytes;
-    for (uint i = 0; i < buffer->max_sample_count; i++) {
-        int32_t value0 = (vol * sine_wave_table[pos0 >> 16u]) << 8u;
-        int32_t value1 = (vol * sine_wave_table[pos1 >> 16u]) << 8u;
-        // use 32bit full scale
-        samples[i*2+0] = value0 + (value0 >> 16u);  // L
-        samples[i*2+1] = value1 + (value1 >> 16u);  // R
-        pos0 += step0;
-        pos1 += step1;
-        if (pos0 >= pos_max) pos0 -= pos_max;
-        if (pos1 >= pos_max) pos1 -= pos_max;
+    for (uint i = 0; i < buffer->max_sample_count; i++) 
+    {
+
+//        float value = audioWave.update(1.0f / DEVICE_SAMPLE_RATE);
+
+        float value = audioWave.update(1.0f / DEVICE_SAMPLE_RATE);
+
+        int16 s = (int16)(value * audioWave.volumePercent / 100.0f);
+
+        for (ma_uint64 iChannel = 0; iChannel < DEVICE_CHANNELS; ++iChannel)
+        {
+            samples[i * DEVICE_CHANNELS + iChannel] = s;
+        }
+
+//        int32_t value0 = (vol * sine_wave_table[pos0 >> 16u]) << 8u;
+//        int32_t value1 = (vol * sine_wave_table[pos1 >> 16u]) << 8u;
+//        // use 32bit full scale
+//        samples[i*2+0] = value0 + (value0 >> 16u);  // L
+//        samples[i*2+1] = value1 + (value1 >> 16u);  // R
+//        pos0 += step0;
+//        pos1 += step1;
+//        if (pos0 >= pos_max) pos0 -= pos_max;
+//        if (pos1 >= pos_max) pos1 -= pos_max;
     }
     buffer->sample_count = buffer->max_sample_count;
     give_audio_buffer(ap, buffer);
