@@ -9,6 +9,7 @@
 #include "types.h"
 #include <mutex>
 #include <memory> // std::shared_ptr<>
+#include <cstring> // memcpy()
 
 #pragma GCC diagnostic ignored "-Wmultichar"
 
@@ -35,9 +36,8 @@ struct AudioFile
         return false;
     }
 
-    bool LoadWav(const char* pathname)
+    bool LoadWavFromFile(const char* pathname)
     {
-        fileName = pathname;
         size_t IO_GetFileSize(const char* Name);
 
         size_t size = IO_GetFileSize(pathname);
@@ -47,49 +47,67 @@ struct AudioFile
         if (!size)
             return false;
 
-        if (size < wavHeaderSize)       // minimal wav header
-            return false;
-
-        fileData.resize(size);
-
         FILE* file = 0;
 
         file = fopen(pathname, "rb");
 //        errno_t err = fopen_s(&file, pathname, "rb");
         //        if ((file = _wfopen(pathname.c_str(), L"rb")) != NULL)
 //        if (err == 0)
+        if(file)
         {
+            fileData.resize(size);
             fread(fileData.data(), size, 1, file);
+            bool ret = _LoadPhase2(pathname, fileData.data(), size);
             fclose(file);
 
-            // https://docs.fileformat.com/audio/wav
-            // https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+            return ret;
+        }
+    }
 
-            uint32 riff = *(uint32*)&fileData[0];
-            uint32 wave = *(uint32*)&fileData[8];
-            uint32 fmt = *(uint32*)&fileData[12];
-            uint32 chunkSize = *(uint32*)&fileData[16];
-            uint16 format = *(uint16*)&fileData[20];
-            uint16 channels = getChannelCount();
-            uint16 bitsPerSample = *(uint16*)&fileData[34];
-            if (riff != 'FFIR' ||   // 'RIFF'
-                wave != 'EVAW' ||   // 'WAVE'
-                fmt != ' tmf' ||    // 'fmt '
-                chunkSize != 16 ||  // 16 / 18 / 28 / 40
-                format != 1 ||      // PCM
-                (channels != 1 && channels != 2) ||      // mono / stereo
-                bitsPerSample != 16) // 16 bit
-            {
-                fileData.clear();
-                return false;
-            }
+    bool LoadWavFromMemory(const char* pathname, uint8* inMem, size_t size)
+    {
+        fileData.resize(size);
+        memcpy(fileData.data(), inMem, size);
+        return _LoadPhase2(pathname, fileData.data(), size);
+    }
 
-            return true;
+private:
+    bool _LoadPhase2(const char* pathname, uint8* inMem, size_t size)
+    {
+        fileName.clear();
+        if (size < wavHeaderSize)       // minimal wav header
+        {
+            fileData.clear();
+            return false;
         }
 
-        fileData.clear();
-        return false;
+        // https://docs.fileformat.com/audio/wav
+        // https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+
+        uint32 riff = *(uint32*)&fileData[0];
+        uint32 wave = *(uint32*)&fileData[8];
+        uint32 fmt = *(uint32*)&fileData[12];
+        uint32 chunkSize = *(uint32*)&fileData[16];
+        uint16 format = *(uint16*)&fileData[20];
+        uint16 channels = getChannelCount();
+        uint16 bitsPerSample = *(uint16*)&fileData[34];
+        if (riff != 'FFIR' ||   // 'RIFF'
+            wave != 'EVAW' ||   // 'WAVE'
+            fmt != ' tmf' ||    // 'fmt '
+            chunkSize != 16 ||  // 16 / 18 / 28 / 40
+            format != 1 ||      // PCM
+            (channels != 1 && channels != 2) ||      // mono / stereo
+            bitsPerSample != 16) // 16 bit
+        {
+            fileData.clear();
+            return false;
+        }
+
+        fileName = pathname;
+        return true;
     }
+
+public:
 
     const uint32 getSampleDataSize() const
     {

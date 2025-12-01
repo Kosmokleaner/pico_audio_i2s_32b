@@ -1,7 +1,7 @@
 # 32bit I2S DAC Library for Raspberry Pi Pico / Pico 2
 
 
-# My personal build instructions on Raspberry Pi 5 Ubuntu
+## My personal build instructions on Raspberry Pi 5 Ubuntu
 I could not get it to work on Windows but I might try again.
 
 todo: combine with existing instructions

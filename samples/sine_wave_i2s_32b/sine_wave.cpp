@@ -17,6 +17,7 @@
 #include "pico/stdlib.h"
 #include "pico/audio.h"
 #include "pico/audio_i2s.h"
+#include "GranularSynth.h"
 
 #define SINE_WAVE_TABLE_LEN 2048
 #define SAMPLES_PER_BUFFER 1156 // Samples / channel
@@ -198,7 +199,13 @@ audio_buffer_pool_t *i2s_audio_init(uint32_t sample_freq)
     return producer_pool;
 }
 
+Wave g_wave;
+
 int main() {
+
+    std::shared_ptr<AudioFile> audioFile = make_shared<AudioFile>();
+    audiFile->CopyRaw();
+    setAudioFile(audioFile);
 
     stdio_init_all();
 
