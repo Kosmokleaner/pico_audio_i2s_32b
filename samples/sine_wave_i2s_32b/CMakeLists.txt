@@ -25,6 +25,7 @@ set(bin_name ${PROJECT_NAME})
 add_executable(${PROJECT_NAME}
     sine_wave.cpp
     GranularSynth.cpp
+    audioSample.cpp
 )
 
 pico_enable_stdio_usb(${bin_name} 1)

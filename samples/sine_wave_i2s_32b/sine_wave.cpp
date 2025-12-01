@@ -203,8 +203,10 @@ Wave g_wave;
 
 int main() {
 
-    std::shared_ptr<AudioFile> audioFile = make_shared<AudioFile>();
-    audiFile->CopyRaw();
+    std::shared_ptr<AudioFile> audioFile = std::make_shared<AudioFile>();
+    // in audioSample.cpp
+    unsigned extern char* g_sample;
+    audioFile->LoadWavFromMemory("", g_sample, 69116);
     setAudioFile(audioFile);
 
     stdio_init_all();
